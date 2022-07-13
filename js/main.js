@@ -15,6 +15,8 @@
       scrollHeight: 0,
       objs: {
         //html 객체 모으기
+        //각 구간의 컨테이너 역할 지정
+        container: document.querySelector("#scroll-section-0"), //section에 있는 ID값
       },
     },
     {
@@ -22,18 +24,27 @@
       type: "normal",
       heightNum: 5,
       scrollHeight: 0,
+      objs: {
+        container: document.querySelector("#scroll-section-1"),
+      },
     },
     {
       // 2
       type: "sticky",
       heightNum: 5,
       scrollHeight: 0,
+      objs: {
+        container: document.querySelector("#scroll-section-2"),
+      },
     },
     {
       // 3
       type: "sticky",
       heightNum: 5,
       scrollHeight: 0,
+      objs: {
+        container: document.querySelector("#scroll-section-3"),
+      },
     },
   ];
 
@@ -42,9 +53,14 @@
     // sceneInfo를 다 돌면서 4구간의 scrollHeight를 셋팅한다
     for (let i = 0; i < sceneInfo.length; i++) {
       sceneInfo[i].scrollHeight = sceneInfo[i].heightNum * window.innerHeight;
+      //컨테이너에 각 scrollHeight를 연결한다
+      sceneInfo[
+        i
+      ].objs.container.style.height = `${sceneInfo[i].scrollHeight}px`;
     }
-    console.log(sceneInfo);
   }
+  window.addEventListener("resize", setLayout); //window 창이 사이즈가 변할 때 setLayout 실행
+
   setLayout();
 })();
 
