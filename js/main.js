@@ -2,6 +2,8 @@
 
 //즉시 호출 사용 //전역 변수 피하기 위함
 (() => {
+  let yOffset = 0; //window.pageYOffset 대신 사용할 변수
+
   const sceneInfo = [
     //객체 4개 생성 스크롤 섹션도 4개
     //스크롤 높이는 스크립트로 미리 잡아준다 //각 픽셀에 대한 정보를 scrollHeight에 생성
@@ -59,7 +61,15 @@
       ].objs.container.style.height = `${sceneInfo[i].scrollHeight}px`;
     }
   }
+
+  function scrollLoop() {}
+
   window.addEventListener("resize", setLayout); //window 창이 사이즈가 변할 때 setLayout 실행
+  window.addEventListener("scroll", () => {
+    // 구체적인 역할을 하는 함수 넣는 곳, 추가적인 함수를 넣기 위해 익명함수로 생성했음
+    yOffset = window.pageYOffset; // 스크롤이 일어날 때 pageYOffset값으로 갱신한다
+    scrollLoop(); //스크롤 시 내려간다는의미로 생성
+  });
 
   setLayout();
 })();
