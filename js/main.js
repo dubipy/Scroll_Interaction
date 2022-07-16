@@ -3,6 +3,8 @@
 //즉시 호출 사용 //전역 변수 피하기 위함
 (() => {
   let yOffset = 0; //window.pageYOffset 대신 사용할 변수
+  let prevScrollHeight = 0; //현재 스크롤 위치(yOffset)보다 이전에 위치한 스크롤 섹션들의 스크롤 높이값의 합
+  let currentScene = 0; // 현재 활성화 된(눈 앞에 보고 있는) scene(scroll-section) // prevScrollHeight와 yOffset의 높이값을 비교해서 currentScene이 몇번째인지 판별할 수 있다
 
   const sceneInfo = [
     //객체 4개 생성 스크롤 섹션도 4개
@@ -62,13 +64,34 @@
     }
   }
 
-  function scrollLoop() {}
+  function scrollLoop() {
+    //몇번째 스크롤 섹션인지 판별하기 위한 함수 작성
+    prevScrollHeight = 0;
+    // 활성화 시킬 scene의 번호를 적어준다. 활성해둔 prevScrollHeight의 모든 scene의 scrollHeight의 값을 더해서 확인한다
+    for (let i = 0; i < currentScene; i++) {
+      //prevScrollHeight와 yOffset의 높이값을 비교해서 판별하는 함수가 currentScene이니까 currentScene은 0 일 때 아래 값들이 아무런 행동을 취하지 않다가
+      //스크롤 시 값이 1(section 1번)이 되면 위에 prevScrollHeight값은 0에서 3990값이 들어가게된다
+      prevScrollHeight += sceneInfo[i].scrollHeight;
+    }
+    //이렇게 동작하기 위해선 스크롤 할 때 마다 체크해서 currentScene의 값을 + 1 - 1해줘야한다
+    if (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
+      //증가할 땐 currentScene이 더해줘야한다
+      currentScene++;
+    }
+    if (yOffset < prevScrollHeight) {
+      //브라우저에서 스크롤 최상단에서 위로 쭉 땡기면 바운스 효과가 나오는데 사파리 같은 경우에는 마이너스 값으로 취급한다
+      //이때 이러한 값 때문에 의도치 않은 효과가 나오므로 사전에 방지한다
+      if (currentScene === 0) return; // 이렇게 작성하면 마이너스 값을 취급하는 브라우저에서도 마이너스로 빼지 않고 리턴하며 종료시킨다
+      currentScene--;
+    }
+    console.log(currentScene);
+  }
 
   window.addEventListener("resize", setLayout); //window 창이 사이즈가 변할 때 setLayout 실행
   window.addEventListener("scroll", () => {
     // 구체적인 역할을 하는 함수 넣는 곳, 추가적인 함수를 넣기 위해 익명함수로 생성했음
     yOffset = window.pageYOffset; // 스크롤이 일어날 때 pageYOffset값으로 갱신한다
-    scrollLoop(); //스크롤 시 내려간다는의미로 생성
+    scrollLoop(); //스크롤 시 내려간다는의미로 생성 // 스크롤 시 scrollLoop가 실행됨
   });
 
   setLayout();
