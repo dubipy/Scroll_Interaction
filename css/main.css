@@ -19,9 +19,9 @@ a {
   text-decoration: none;
 }
 
-/* body.before-load {
+body.before-load {
   overflow: hidden;
-} */
+}
 .container {
   /* iPhone 가로 스크롤 방지 */
   overflow-x: hidden;
@@ -96,7 +96,7 @@ a {
   margin: 5px 0;
   height: 3em;
   font-size: 2.5rem;
-  opacity: 0;
+  opacity: 1;
 }
 .main-message p {
   font-weight: bold;
