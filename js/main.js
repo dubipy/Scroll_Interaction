@@ -87,6 +87,10 @@
     document.body.setAttribute('id',`show-scene-${currentScene}`)
   }
 
+  function calcValues() {
+    
+  }
+
   function playAnimation() {
     switch (currentScene) {
       case 0:
