@@ -17,6 +17,7 @@
       type: "sticky", //sticky로 동작하는 이벤트와 일반적인 스크롤로 작동되는 스크롤 스타일들이 다르기 때문에 타입을 지정한다 (sticky, normal)
       heightNum: 5,
       scrollHeight: 0,
+      //objs 는 html dom 객체 요소
       objs: {
         //html 객체 모으기
         //각 구간의 컨테이너 역할 지정
@@ -27,6 +28,7 @@
         messageD: document.querySelector('#scroll-section-0 .main-message.d')
       },
       //어느시점에 등장하고 빠질것인지 정한다
+      //values는 값에 해당된다
       values: {
         //텍스트 올라고오 내려오는 투명도 지정
         messageA_opacity: [0, 1] //시작과 끝 값 지정 0 ~ 1
@@ -72,13 +74,13 @@
       ].objs.container.style.height = `${sceneInfo[i].scrollHeight}px`;
     }
 
-    yOffset = window.pageYOffset; //pageYOffset 대신 yOffset변수를 사용하기로했지만 ㅈㅇ확한 의미를 두기 위함
+    yOffset = window.pageYOffset; //pageYOffset 대신 yOffset변수를 사용하기로했지만 정확한 의미를 두기 위함
     //setLayout 엣도 현재 스크롤 위치에 맞게 currentscene을 셋팅해준다
     let totalScrollHeight = 0;
     for(let i=0; i < sceneInfo.length; i++) {
-      totalScrollHeight += sceneInfo[i].scrollHeight; //각 scene에 scrollHeight를 ㄷ햇ㅅ ㄶㅇ주는 중
-      //현재 스크롤 높이와 비교한다 for문 돌면 돌수록 스크롤 높이가 ㅋ짐
-      if(totalScrollHeight >= yOffset) { //ㅇㄴ젠가는 ㅁㅁ추ㅇ야 하므로 현재 스크롤 위치보다 큭나 같을 때
+      totalScrollHeight += sceneInfo[i].scrollHeight; //각 scene에 scrollHeight를 더해서 넣어주는 중
+      //현재 스크롤 높이와 비교한다 for문 돌면 돌수록 스크롤 높이가 커짐
+      if(totalScrollHeight >= yOffset) { //언젠가는 맞춰야 하므로 현재 스크롤 위치보다 큭나 같을 때
         currentScene = i;
         break;
       }
@@ -87,14 +89,27 @@
     document.body.setAttribute('id',`show-scene-${currentScene}`)
   }
 
-  function calcValues() {
-    
+  function calcValues(values, currentYOffset) { //currentYOffset 매개변수가 현재 씬에서 얼마나 스크롤 됐는지 나타낸다
+    let rv;
+    let scrollRatio = currentYOffset / sceneInfo[currentScene].scrollHeight //현재 Scene(스크롤섹션)에서 전체 범위에서 현재 얼만큼 스크롤 했는지 스크롤 범위를 비율로 구한다
+    return scrollRatio;
   }
 
   function playAnimation() {
+
+    const objs = sceneInfo[currentScene].objs;
+    const values = sceneInfo[currentScene].values;
+    const currentYOffset = yOffset - prevScrollHeight;
+
+    //스크롤 높이 픽셀, scene 넘어갈 시 값 초기화
+    // console.log(currentScene, currentYOffset)
+
     switch (currentScene) {
       case 0:
         // console.log('0 play');
+        let messageA_opacity_0 = values.messageA_opacity[0];
+        let messageA_opacity_1 = values.messageA_opacity[1];
+        console.log(calcValues(values.messageA_opacity, currentYOffset))
         break;
 
       case 1:
