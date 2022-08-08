@@ -5,6 +5,7 @@
   let yOffset = 0; //window.pageYOffset 대신 사용할 변수
   let prevScrollHeight = 0; //현재 스크롤 위치(yOffset)보다 이전에 위치한 스크롤 섹션들의 스크롤 높이값의 합
   let currentScene = 0; // 현재 활성화 된(눈 앞에 보고 있는) scene(scroll-section) // prevScrollHeight와 yOffset의 높이값을 비교해서 currentScene이 몇번째인지 판별할 수 있다
+  let enterNewScene = false; // 새로운 scene이 시작된 순간 True
 
   const sceneInfo = [
     //객체 4개 생성 스크롤 섹션도 4개
@@ -31,7 +32,8 @@
       //values는 값에 해당된다
       values: {
         //텍스트 올라고오 내려오는 투명도 지정
-        messageA_opacity: [0, 1] //시작과 끝 값 지정 0 ~ 1
+        //시작과 끝 값 지정 0 ~ 1
+        messageA_opacity: [0, 1] //전체 범위에 scrollRatio를 곱하고 초기값인 0을 더해준다
       }
     },
     {
@@ -92,7 +94,10 @@
   function calcValues(values, currentYOffset) { //currentYOffset 매개변수가 현재 씬에서 얼마나 스크롤 됐는지 나타낸다
     let rv;
     let scrollRatio = currentYOffset / sceneInfo[currentScene].scrollHeight //현재 Scene(스크롤섹션)에서 전체 범위에서 현재 얼만큼 스크롤 했는지 스크롤 범위를 비율로 구한다
-    return scrollRatio;
+    
+    rv = scrollRatio * (values[1] - values[0]) + values[0];
+
+    return rv;
   }
 
   function playAnimation() {
@@ -107,9 +112,8 @@
     switch (currentScene) {
       case 0:
         // console.log('0 play');
-        let messageA_opacity_0 = values.messageA_opacity[0];
-        let messageA_opacity_1 = values.messageA_opacity[1];
-        console.log(calcValues(values.messageA_opacity, currentYOffset))
+        let messageA_opacity_in = calcValues(values.messageA_opacity, currentYOffset);
+        objs.messageA.style.opacity = messageA_opacity_in;
         break;
 
       case 1:
@@ -127,6 +131,7 @@
   }
 
   function scrollLoop() {
+    enterNewScene = false;
     //몇번째 스크롤 섹션인지 판별하기 위한 함수 작성
     prevScrollHeight = 0;
     // 활성화 시킬 scene의 번호를 적어준다. 활성해둔 prevScrollHeight의 모든 scene의 scrollHeight의 값을 더해서 확인한다
@@ -137,22 +142,25 @@
     }
     //이렇게 동작하기 위해선 스크롤 할 때 마다 체크해서 currentScene의 값을 + 1 - 1해줘야한다
     if (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
+      enterNewScene = true;
       //증가할 땐 currentScene이 더해줘야한다
       currentScene++;
       document.body.setAttribute('id',`show-scene-${currentScene}`)
     }
     if (yOffset < prevScrollHeight) {
+      enterNewScene = true;
       //브라우저에서 스크롤 최상단에서 위로 쭉 땡기면 바운스 효과가 나오는데 사파리 같은 경우에는 마이너스 값으로 취급한다
       //이때 이러한 값 때문에 의도치 않은 효과가 나오므로 사전에 방지한다
       if (currentScene === 0) return; // 이렇게 작성하면 마이너스 값을 취급하는 브라우저에서도 마이너스로 빼지 않고 리턴하며 종료시킨다
       currentScene--;
       document.body.setAttribute('id',`show-scene-${currentScene}`)
     }
-//  document.body.setAttribute('id',`show-scene-${currentScene}`) //currentScene의 순서를 낳는다. body의 id가 셋팅된다
+    // document.body.setAttribute('id',`show-scene-${currentScene}`) //currentScene의 순서를 낳는다. body의 id가 셋팅된다
 
-  //애니메이션 처리
-  playAnimation();
-  //  document.body.setAttribute('id',`show-scene-${currentScene}`) //currentScene의 순사를 낳는다. body의 id가 셋팅된다
+    if(enterNewScene) return;
+    //애니메이션 처리
+    playAnimation();
+    //  document.body.setAttribute('id',`show-scene-${currentScene}`) //currentScene의 순사를 낳는다. body의 id가 셋팅된다
   }
 
 
