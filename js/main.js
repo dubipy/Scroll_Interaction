@@ -109,7 +109,6 @@
         // console.log('3 play');
         break;
     }
-
   }
 
   function scrollLoop() {
@@ -134,11 +133,11 @@
       currentScene--;
       document.body.setAttribute('id',`show-scene-${currentScene}`)
     }
-  //  document.body.setAttribute('id',`show-scene-${currentScene}`) //currentScene의 순서를 낳는다. body의 id가 셋팅된다
+//  document.body.setAttribute('id',`show-scene-${currentScene}`) //currentScene의 순서를 낳는다. body의 id가 셋팅된다
 
   //애니메이션 처리
   playAnimation();
-
+  //  document.body.setAttribute('id',`show-scene-${currentScene}`) //currentScene의 순사를 낳는다. body의 id가 셋팅된다
   }
 
 
