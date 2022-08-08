@@ -19,9 +19,9 @@ a {
   text-decoration: none;
 }
 
-/* body.before-load {
+body.before-load {
   overflow: hidden;
-} */
+}
 .container {
   /* iPhone 가로 스크롤 방지 */
   overflow-x: hidden;
@@ -96,7 +96,7 @@ a {
   margin: 5px 0;
   height: 3em;
   font-size: 2.5rem;
-  opacity: 0;
+  opacity: 1;
 }
 .main-message p {
   font-weight: bold;
@@ -180,6 +180,8 @@ a {
   display: block;
   will-change: transform, opacity;
 }
+
+
 .scroll-effect-end .sticky-elem {
   /* 스크롤 효과가 모두 끝나고, 아래 일반 콘텐츠 영역에서는 sticky-elem들을 모두 안보이도록 */
   display: none !important;
