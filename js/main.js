@@ -33,7 +33,8 @@
       values: {
         //텍스트 올라고오 내려오는 투명도 지정
         //시작과 끝 값 지정 0 ~ 1
-        messageA_opacity: [0, 1] //전체 범위에 scrollRatio를 곱하고 초기값인 0을 더해준다
+        messageA_opacity: [0, 1, {start: 0.1, end: 0.2}], //전체 범위에 scrollRatio를 곱하고 초기값인 0을 더해준다
+        messageB_opacity: [0, 1, {start: 0.3, end: 0.4}], //start, end는 실행되는 애니메이션 구간 설정
       }
     },
     {
@@ -93,9 +94,28 @@
 
   function calcValues(values, currentYOffset) { //currentYOffset 매개변수가 현재 씬에서 얼마나 스크롤 됐는지 나타낸다
     let rv;
-    let scrollRatio = currentYOffset / sceneInfo[currentScene].scrollHeight //현재 Scene(스크롤섹션)에서 전체 범위에서 현재 얼만큼 스크롤 했는지 스크롤 범위를 비율로 구한다
+    //현재 씬(스크롤섹션)에서 스크롤된 범위를 비율로 구하기
+    const scrollHeight = sceneInfo[currentScene].scrollHeight;
+    const scrollRatio = currentYOffset / scrollHeight; //현재 Scene(스크롤섹션)에서 전체 범위에서 현재 얼만큼 스크롤 했는지 스크롤 범위를 비율로 구한다
     
-    rv = scrollRatio * (values[1] - values[0]) + values[0];
+    //start end가 구체적으로 명시된 것들은 그 타이밍으로 적용되게끔
+    if (values.length === 3) {
+      //start ~ end 사이에 애니메이션 실행
+      const partScrollStart = values[2].start * scrollHeight;
+      const partScrollEnd = values[2].end * scrollHeight;
+      const partScrollHeight = partScrollEnd - partScrollStart;
+
+      if (currentYOffset >= partScrollStart && currentYOffset <= partScrollEnd) {
+        rv = (currentYOffset - partScrollStart) / partScrollHeight * (values[1] - values[0]) + values[0];
+      } else if (currentYOffset < partScrollStart) {
+        rv = values[0];
+      } else if (currentYOffset > partScrollEnd) {
+        rv = values[1];
+      }
+
+    }else {
+      rv = scrollRatio * (values[1] - values[0]) + values[0];
+    }
 
     return rv;
   }
